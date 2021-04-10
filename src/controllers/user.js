@@ -1,23 +1,29 @@
 const models = require("../models");
+const validateAdmin = require("../utils/validateAdmin");
 
 const usersController = {
   get: async (req, res) => {
     const user = await models.user.findByPk(req.params.id, { raw: true });
-    res.json(user);
+    return res.json(user);
   },
   getAll: async (req, res) => {
+    const validAdmin = await validateAdmin(req);
+    if (!validAdmin) return res.json({ err: "Não autorizado" }).status(401);
     const users = await models.user.findAll({ raw: true });
-    res.json(users);
+    return res.json(users);
   },
   create: async (req, res) => {
     try {
+      const validAdmin = await validateAdmin(req);
+      if (!validAdmin) return res.json({ err: "Não autorizado" }).status(401);
+
       const result = await models.user.create(req.body);
       if (!result)
         res.json({ err: "Não foi possível criar o usuário" }).status(400);
       delete result.dataValues.password;
-      res.json(result.dataValues);
+      return res.json(result.dataValues);
     } catch (e) {
-      res.json({ err: "Não foi possível criar o usuário" }).status(400);
+      return res.json({ err: "Não foi possível criar o usuário" }).status(400);
     }
   },
 };
