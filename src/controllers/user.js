@@ -11,9 +11,9 @@ const usersController = {
   },
   create: async (req, res, next) => {
     try {
-      const result = await models.user.create(req.body)
+      let result = await models.user.create(req.body)
       if (!result) res.json({err: 'Não foi possível criar o usuário'}).status(400)
-
+      delete result.dataValues.password
       res.json(result.dataValues)
     } catch {
       res.json({err: 'Não foi possível criar o usuário'}).status(400)
