@@ -1,6 +1,7 @@
 'use strict';
 const faker = require('faker')
 const uuid = require('uuid')
+const bcrypt = require("bcrypt")
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -9,7 +10,7 @@ module.exports = {
       name: faker.name.findName(),
       email: "admin@admin.com",
       isAdmin: true,
-      password: '123456',
+      password: await bcrypt.hashSync("123456", 5);
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});
