@@ -15,10 +15,10 @@ const authorizeAdmin = async (req, res, next) => {
 
     if (!user.isadmin) return res.json({ err: "Não autorizado" }).status(401);
 
-    next();
+    return next();
   } catch (e) {
     console.log(e);
-    return res.json({ err: "Não autorizado" }).status(401);  
+    return res.json({ err: "Não autorizado" }).status(401);
   }
 };
 

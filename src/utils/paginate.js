@@ -1,13 +1,13 @@
-const paginate = (query, params ) => {
-  const { page, PAGESIZE } = params
-  console.log(page, PAGESIZE)
-  const offset = page * PAGESIZE
-  const limit = PAGESIZE
+const paginate = (query, params) => {
+  const { page, PAGESIZE } = params;
+  console.log(page, PAGESIZE);
+  const offset = page * PAGESIZE;
+  const limit = PAGESIZE;
   return {
     ...query,
     offset,
-    limit
-  }
-}
+    limit,
+  };
+};
 
-module.exports = paginate
+module.exports = paginate;

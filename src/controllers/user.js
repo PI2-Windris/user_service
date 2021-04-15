@@ -1,7 +1,7 @@
 const models = require("../models");
-const paginate = require("../utils/paginate")
-const validateAdmin = require("../middlewares/authorization");
-const PAGESIZE = 10
+const paginate = require("../utils/paginate");
+
+const PAGESIZE = 10;
 
 const usersController = {
   get: async (req, res) => {
@@ -9,9 +9,11 @@ const usersController = {
     return res.json(user);
   },
   getAll: async (req, res) => {
-    let { page } = req.query
-    if(!page) page = 0
-    const users = await models.user.findAll(paginate({ raw: true }, { page, PAGESIZE }));
+    let { page } = req.query;
+    if (!page) page = 0;
+    const users = await models.user.findAll(
+      paginate({ raw: true }, { page, PAGESIZE })
+    );
     return res.json(users);
   },
   create: async (req, res) => {
@@ -27,20 +29,20 @@ const usersController = {
   },
   update: async (req, res) => {
     try {
-      const { id } = req.params
-      const {...data}  = req.body;
+      const { id } = req.params;
+      const { ...data } = req.body;
 
-      let user = await models.user.findByPk(id);
+      const user = await models.user.findByPk(id);
 
-      return user.update({...data}).then(result => {
-        res.json(result).status(200)
-      }).catch(err => {
-        res.json(result).status(400)
-      })
+      user
+        .update({ ...data })
+        .then((result) => res.json(result).status(200))
+        .catch((err) => res.json(err).status(400));
+      return;
     } catch (e) {
-      res.json(e).status(400)
+      return res.json(e).status(400);
     }
-  }
+  },
 };
 
 module.exports = usersController;
