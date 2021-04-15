@@ -1,13 +1,15 @@
 const express = require("express");
 
 const router = express.Router();
-
+const authorizeAdmin = require('../middlewares/authorization');
 const usersController = require("../controllers/user");
 
 router.get("/:id", usersController.get);
 
-router.get("/", usersController.getAll);
+router.put("/:id", usersController.update);
 
-router.post("/", usersController.create);
+router.get("/", authorizeAdmin, usersController.getAll);
+
+router.post("/", authorizeAdmin, usersController.create);
 
 module.exports = router;
