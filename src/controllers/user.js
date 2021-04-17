@@ -1,5 +1,7 @@
 const models = require("../models");
-const validateAdmin = require("../utils/validateAdmin");
+const paginate = require("../utils/paginate");
+
+const PAGESIZE = 10;
 
 const usersController = {
   get: async (req, res) => {
@@ -7,16 +9,15 @@ const usersController = {
     return res.json(user);
   },
   getAll: async (req, res) => {
-    const validAdmin = await validateAdmin(req);
-    if (!validAdmin) return res.json({ err: "Não autorizado" }).status(401);
-    const users = await models.user.findAll({ raw: true });
+    let { page } = req.query;
+    if (!page) page = 0;
+    const users = await models.user.findAll(
+      paginate({ raw: true }, { page, PAGESIZE })
+    );
     return res.json(users);
   },
   create: async (req, res) => {
     try {
-      const validAdmin = await validateAdmin(req);
-      if (!validAdmin) return res.json({ err: "Não autorizado" }).status(401);
-
       const result = await models.user.create(req.body);
       if (!result)
         res.json({ err: "Não foi possível criar o usuário" }).status(400);
@@ -24,6 +25,22 @@ const usersController = {
       return res.json(result.dataValues);
     } catch (e) {
       return res.json({ err: "Não foi possível criar o usuário" }).status(400);
+    }
+  },
+  update: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { ...data } = req.body;
+
+      const user = await models.user.findByPk(id);
+
+      user
+        .update({ ...data })
+        .then((result) => res.json(result).status(200))
+        .catch((err) => res.json(err).status(400));
+      return;
+    } catch (e) {
+      return res.json(e).status(400);
     }
   },
 };

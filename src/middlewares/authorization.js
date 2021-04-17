@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const models = require("../models");
 
-const validateAdmin = async (req) => {
+const authorizeAdmin = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
 
@@ -13,13 +13,13 @@ const validateAdmin = async (req) => {
 
     if (!user) throw new Error("Usuário não encontrado");
 
-    if (user.isadmin) return true;
+    if (!user.isadmin) return res.json({ err: "Não autorizado" }).status(401);
 
-    return false;
+    return next();
   } catch (e) {
     console.log(e);
-    return false;
+    return res.json({ err: "Não autorizado" }).status(401);
   }
 };
 
-module.exports = validateAdmin;
+module.exports = authorizeAdmin;
