@@ -10,7 +10,7 @@ module.exports = {
       name: faker.name.findName(),
       email: "admin@admin.com",
       isAdmin: true,
-      password: await bcrypt.hashSync("123456", 5);
+      password: await bcrypt.hashSync("123456", 5),
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});
